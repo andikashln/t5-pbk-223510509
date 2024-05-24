@@ -33,7 +33,13 @@
 
         <!-- Cards -->
         <div class="q-mt-xl row justify-center">
-          <q-card v-for="product in products" :key="product.name" class="my-card q-mb-xl q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3">
+          <q-card v-for="(product, index) in products" :key="product.name" class="my-card q-mb-xl q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <q-checkbox 
+              v-model="selectedProducts" 
+              :val="product" 
+              dense 
+              class="q-mb-sm animated-checkbox"
+            />
             <q-img :src="product.image" :alt="product.name" class="my-card-img">
               <q-badge color="red" floating>{{ product.discount }}Flash Sale</q-badge>
             </q-img>
@@ -42,7 +48,8 @@
               <div class="text-subtitle1 text-center">{{ product.price }}</div>
             </q-card-section>
             <q-card-actions align="center">
-              <q-btn flat label="Add to Cart" color="primary" />
+              <q-btn flat label="Add to Cart" color="primary" @click="addToCart(product)" />
+              <q-btn flat label="Delete" color="negative" @click="deleteProduct(index)" />
             </q-card-actions>
           </q-card>
         </div>
@@ -78,15 +85,25 @@ export default {
       'https://down-id.img.susercontent.com/file/id-11134201-7r98v-lusvzsrepuqqd2',
       'https://down-id.img.susercontent.com/file/id-11134207-7quky-li9nohxax17u67'
     ];
-    const products = [
-      { name: 'Tas 1', price: 'Rp. 1.200K', image: 'https://i.pinimg.com/564x/be/e7/a6/bee7a67f32ec3e23f5e85c683fe7062f.jpg'},  // Ganti dengan URL gambar Anda
-      { name: 'Sepatu 2', price: 'Rp. 450K', image: 'https://down-id.img.susercontent.com/file/0e473353b14420b53df88e4fbe0de3d2'},
-      { name: 'Topi 3', price: 'Rp. 145K', image: 'https://down-id.img.susercontent.com/file/3a546b179338e48768d0f9585b5f755c'},
-      { name: 'Tas 4', price: 'Rp. 180K', image: 'https://down-id.img.susercontent.com/file/70b043d27c0eab1592c6d3d2e1c3496e'}
-    ];
+    const products = ref([
+      { name: 'Tas 1', price: 'Rp. 1.200K', image: 'https://i.pinimg.com/564x/be/e7/a6/bee7a67f32ec3e23f5e85c683fe7062f.jpg', discount: '10%'},  // Ganti dengan URL gambar Anda
+      { name: 'Sepatu 2', price: 'Rp. 450K', image: 'https://down-id.img.susercontent.com/file/0e473353b14420b53df88e4fbe0de3d2', discount: '15%'},
+      { name: 'Topi 3', price: 'Rp. 145K', image: 'https://down-id.img.susercontent.com/file/3a546b179338e48768d0f9585b5f755c', discount: '5%'},
+      { name: 'Tas 4', price: 'Rp. 180K', image: 'https://down-id.img.susercontent.com/file/70b043d27c0eab1592c6d3d2e1c3496e', discount: '20%'}
+    ]);
+
+    const selectedProducts = ref([]);
 
     const toggleLeftDrawer = () => {
       leftDrawerOpen.value = !leftDrawerOpen.value;
+    };
+
+    const deleteProduct = (index) => {
+      products.value.splice(index, 1);
+    };
+
+    const addToCart = (product) => {
+      console.log(`${product.name} telah ditambahkan ke keranjang.`);
     };
 
     return {
@@ -94,7 +111,10 @@ export default {
       toggleLeftDrawer,
       slide,
       carouselImages,
-      products
+      products,
+      selectedProducts,
+      deleteProduct,
+      addToCart
     };
   }
 };
@@ -111,11 +131,21 @@ export default {
 .my-card-img {
   border-radius: 10px 10px 0 0;
   height: 250px;
+  object-fit: cover;
 }
 .rounded-borders {
   border-radius: 10px;
 }
 .q-footer {
   border-top: 1px solid #003285;
+}
+.animated-checkbox {
+  transition: transform 0.2s ease-in-out;
+}
+.animated-checkbox .q-checkbox__inner {
+  transform: scale(0.8);
+}
+.animated-checkbox .q-checkbox--model-true .q-checkbox__inner {
+  transform: scale(1.2);
 }
 </style>
